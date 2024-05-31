@@ -3,14 +3,13 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 
-class Handler(ABC):
+class HandlerAbstract(ABC):
     """
-    Интерфейс Обработчика объявляет метод построения цепочки обработчиков. Он
-    также объявляет метод для выполнения запроса.
+    Interface for handler
     """
 
     @abstractmethod
-    def set_next(self, handler: Handler) -> Handler:
+    def set_next(self, handler: HandlerAbstract) -> HandlerAbstract:
         pass
 
     @abstractmethod
@@ -18,64 +17,52 @@ class Handler(ABC):
         pass
 
 
-class AbstractHandler(Handler):
+class Handler(HandlerAbstract):
     """
-    Поведение цепочки по умолчанию может быть реализовано внутри базового класса
-    обработчика.
+    Base class for specific handlers.
+    Stores a reference to the next handler in the chain and defines the base processing method.
     """
 
-    _next_handler: Handler = None
+    _next_handler: HandlerAbstract = None
 
-    def set_next(self, handler: Handler) -> Handler:
+    def set_next(self, handler: HandlerAbstract) -> HandlerAbstract:
         self._next_handler = handler
-        # Возврат обработчика отсюда позволит связать обработчики простым
-        # способом, вот так:
-        # monkey.set_next(squirrel).set_next(dog)
         return handler
 
-    @abstractmethod
-    def handle(self, request: Any) -> str:
+    def handle(self, request: Any) -> Optional[str]:
         if self._next_handler:
             return self._next_handler.handle(request)
-
-        return None
-
-
-"""
-Все Конкретные Обработчики либо обрабатывают запрос, либо передают его
-следующему обработчику в цепочке.
-"""
+        else:
+            return None
 
 
-class Engineer(AbstractHandler):
-    def handle(self, request: Any) -> str:
+class Engineer(Handler):
+    def handle(self, request: Any) -> Optional[str]:
         if request == "engineer":
             return f"Our {request} will contact you"
         else:
             return super().handle(request)
 
 
-class Manager(AbstractHandler):
-    def handle(self, request: Any) -> str:
+class Manager(Handler):
+    def handle(self, request: Any) -> Optional[str]:
         if request == "manager":
             return f"Our {request} will contact you"
         else:
             return super().handle(request)
 
 
-class Head(AbstractHandler):
-    def handle(self, request: Any) -> str:
+class Head(Handler):
+    def handle(self, request: Any) -> Optional[str]:
         if request == "head":
             return f"Our {request} will contact you"
         else:
             return super().handle(request)
 
 
-def client_code(handler: Handler) -> None:
+def client_code(handler: HandlerAbstract) -> None:
     """
-    Обычно клиентский код приспособлен для работы с единственным обработчиком. В
-    большинстве случаев клиенту даже неизвестно, что этот обработчик является
-    частью цепочки.
+    This code demonstrate how to handle client codes
     """
 
     for request in ["engineer", "manager", "head"]:
@@ -87,18 +74,17 @@ def client_code(handler: Handler) -> None:
             print(f"  {request} was left untouched.", end="")
 
 
-if __name__ == "__main__":
-    engineer = Engineer()
-    manager = Manager()
-    head = Head()
+engineer = Engineer()
+manager = Manager()
+head = Head()
 
-    engineer.set_next(manager).set_next(head)
+engineer.set_next(manager).set_next(head)
 
-    # Клиент должен иметь возможность отправлять запрос любому обработчику, а не
-    # только первому в цепочке.
-    print("Chain: engineer > manager > head")
-    client_code(engineer)
-    print("\n")
+# Клиент должен иметь возможность отправлять запрос любому обработчику, а не
+# только первому в цепочке.
+print("Chain: engineer > manager > head")
+client_code(engineer)
+print("\n")
 
-    print("Subchain: manager > head")
-    client_code(manager)
+print("Subchain: manager > head")
+client_code(manager)

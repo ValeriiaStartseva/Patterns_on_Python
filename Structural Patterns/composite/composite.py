@@ -22,17 +22,17 @@ class Employee(OfficeAbstract):
         self.day_vacation: int = day_of_vacation
         self.is_working: bool = True
 
-    def work(self):
+    def work(self) -> str:
         if self.is_working:
             return f"{self.name} is working."
         else:
             return f"{self.name} is not working."
 
-    def quit(self):
+    def quit(self) -> str:
         self.is_working = False
         return f"{self.name} has quit the job."
 
-    def take_vacation(self):
+    def take_vacation(self) -> str:
         if self.is_working and self.day_vacation > 0:
             self.day_vacation -= 1
             return f"{self.name} is on vacation. Remaining vacation days: {self.day_vacation}"
@@ -44,27 +44,27 @@ class Employee(OfficeAbstract):
 
 class CompositeEmployee(OfficeAbstract):
     def __init__(self):
-        self.employees = []
+        self.employees: list = []
 
-    def add_employee(self, employee):
+    def add_employee(self, employee) -> None:
         self.employees.append(employee)
 
-    def remove_employee(self, employee):
+    def remove_employee(self, employee) -> None:
         self.employees.remove(employee)
 
-    def work(self):
+    def work(self) -> str:
         result = ""
         for employee in self.employees:
             result += employee.work() + "\n"
         return result
 
-    def quit(self):
+    def quit(self) -> str:
         result = ""
         for employee in self.employees:
             result += employee.quit() + "\n"
         return result
 
-    def take_vacation(self):
+    def take_vacation(self) -> str:
         result = ""
         for employee in self.employees:
             result += employee.take_vacation() + "\n"

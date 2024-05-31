@@ -49,25 +49,19 @@ class StopwatchDecorator(Decorator):
 
 def client_code(component: Component) -> None:
     """
-    Клиентский код работает со всеми объектами, используя интерфейс Компонента.
-    Таким образом, он остаётся независимым от конкретных классов компонентов, с
-    которыми работает.
+    Func for a client code. Work with component, but independent of the other code
     """
 
     print(f"RESULT: {component.operation()}", end="")
 
 
-if __name__ == "__main__":
-    # Create an instance of ConcreteComponent
-    component = ConcreteComponent()
+# testing
 
-    # Wrap the component with StopwatchDecorator
-    component_with_stopwatch = StopwatchDecorator(component)
+# Create an instance of ConcreteComponent
+concrete_component = ConcreteComponent()
 
-    # Now you can call the operation on each decorated component
-    component_with_stopwatch.operation()
+# Wrap the component with StopwatchDecorator
+component_with_stopwatch = StopwatchDecorator(concrete_component)
 
-
-
-
-
+# Now you can call the operation on each decorated component
+component_with_stopwatch.operation()

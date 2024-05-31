@@ -19,24 +19,6 @@ class TVControlAbstract(ABC):
         pass
 
 
-# Abstraction for Remote Control
-class RemoteControlAbstract(ABC):
-    def __init__(self, device):
-        self._device = device
-
-    @abstractmethod
-    def turn_on(self):
-        pass
-
-    @abstractmethod
-    def turn_off(self):
-        pass
-
-    @abstractmethod
-    def change_channel(self, channel: int):
-        pass
-
-
 # Concrete implementation of TV
 class TVDevice:
     def __init__(self):
@@ -60,8 +42,26 @@ class TVDevice:
         return self._channel
 
 
+# Abstraction for Remote Control
+class RemoteControlAbstract(ABC):
+    def __init__(self, device):
+        self._device = device
+
+    @abstractmethod
+    def turn_on(self):
+        pass
+
+    @abstractmethod
+    def turn_off(self):
+        pass
+
+    @abstractmethod
+    def change_channel(self, channel: int):
+        pass
+
+
 # Concrete implementation of Remote Control
-class BasicRemoteControl(RemoteControl):
+class BasicRemoteControl(RemoteControlAbstract):
     def turn_on(self):
         self._device.power_on()
 
